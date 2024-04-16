@@ -53,8 +53,8 @@ def overlay(background_img, img_to_overlay_t, x, y, overlay_size=None):
 
 def main():
     # -1 choon tasvir shafaf hast?!
-    left_shoe = cv2.imread("/home/hossein/Downloads/images/left_shoe.png", -1)
-    right_shoe = cv2.imread("/home/hossein/Downloads/images/right_shoe.png", -1)
+    left_shoe = cv2.imread("./left_shoe.png", -1)
+    right_shoe = cv2.imread("./right_shoe.png", -1)
     # Open the default camera
     cap = cv2.VideoCapture(0)
 
