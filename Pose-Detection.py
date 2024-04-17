@@ -53,11 +53,12 @@ def overlay(background_img, img_to_overlay_t, x, y, overlay_size=None):
 
 def main():
     # -1 choon tasvir shafaf hast?!
-    left_shoe = cv2.imread("./left_shoe.png", -1)
-    right_shoe = cv2.imread("./right_shoe.png", -1)
+    left_shoe = cv2.imread("/home/hossein/Downloads/images/left_shoe.png", -1)
+    right_shoe = cv2.imread("/home/hossein/Downloads/images/right_shoe.png", -1)
     # Open the default camera
     cap = cv2.VideoCapture(0)
-
+    cap.set(3, 1000)
+    cap.set(4, 720)
     # Check if the camera opened successfully
     if not cap.isOpened():
         print("Error: Couldn't open the camera.")
@@ -92,18 +93,24 @@ def main():
             # TODO : shayad in comment eshtba bashe
             # after this func call, we can call foot point by name
             position_data(lmlist)
-            
+
             # TODO:amir
             # if the model see the right foot show the right shoe
             if right_foot_found:
-                sole = calculateDistance(right_foot_index, right_heel)
-                centerX = (right_foot_index[0] - right_heel[0]) / 2
-                centerY = (right_foot_index[1] - right_heel[1]) / 2
-                shoe_size = 3.0
-                diameter = round(sole * shoe_size)
+                right_sole = calculateDistance(right_foot_index, right_heel)
+                # x-ghooszak
+                centerX = right_ankle[0]
+                # y-ghooszak
+                centerY = right_ankle[1]
+                shoe_size = 2.0
+                diameter = round(right_sole * shoe_size)
 
                 x1 = round(centerX - (diameter / 2))
                 y1 = round(centerY - (diameter / 2))
+                print(
+                    f'right_foot_index-x: {right_foot_index[0]}, right_foot_index-y: {right_foot_index[1]},right_heel-x: {right_heel[0]}, right_heel-y: {right_heel[1]} ')
+                print(
+                    f'right sole : {right_sole}, centerX: {centerX}, centerY: {centerY}, diameter: {diameter}, x1: {x1}, y1: {y1}')
                 h, w, c = img.shape
 
                 if x1 < 0:
@@ -122,19 +129,21 @@ def main():
                 if y1 + diameter > h:
                     diameter = h - y1
                 shoe_size = diameter, diameter
-                img = overlay(img, right_shoe, x1, y1, shoe_size)
-                
+                print(f'after x{x1}, y{y1}, diameter{diameter}')
+                if (diameter != 0):
+                    img = overlay(img, right_shoe, x1, y1, shoe_size)
+
             # TODO:amir
             if left_foot_found:
-                #size kaf pa
-                sole = calculateDistance(left_foot_index, left_heel)
-                #x-vsat kaf pa
-                centerX = (left_foot_index[0] - left_heel[0]) / 2
-                #y-vsat kaf pa
-                centerY = (left_foot_index[1] - left_heel[1]) / 2
+                # size kaf pa chap
+                left_sole = calculateDistance(left_foot_index, left_heel)
+                # x-ghooszak
+                centerX = left_ankle[0]
+                # y-ghoozak
+                centerY = left_ankle[1]
 
                 shoe_size = 3.0
-                diameter = round(sole * shoe_size)
+                diameter = round(left_sole * shoe_size)
 
                 x1 = round(centerX - (diameter / 2))
                 y1 = round(centerY - (diameter / 2))
@@ -155,10 +164,10 @@ def main():
 
                 if y1 + diameter > h:
                     diameter = h - y1
+
                 shoe_size = diameter, diameter
-                img = overlay(img, left_shoe, x1, y1, shoe_size)
-
-
+                if (diameter != 0):
+                    img = overlay(img, left_shoe, x1, y1, shoe_size)
 
             # If frame is read correctly, ret is True
         if not ret:
